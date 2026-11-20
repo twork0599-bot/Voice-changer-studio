@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<meta name="color-scheme" content="light dark"/>
+<link rel="icon" href="data:,"/>
+<title>Voice Changer Studio - Fish Audio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@600;700;800&family=Noto+Sans+Bengali:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f4f1ec; --bg2:#ece7de; --surface:#ffffff; --surface2:#faf8f4; --ink:#191612; --muted:#6f665b; --line:#e2d9cb;
+  --accent:#e94e1b; --accent-dark:#c73e12; --teal:#0f766e; --messenger:#0084ff; --gold:#c99a2b;
+  --radius:18px; --shadow:0 10px 30px rgba(25,22,18,.08);
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#131110; --bg2:#1a1714; --surface:#1e1b18; --surface2:#25211d; --ink:#f3ede3; --muted:#a89c8d; --line:#332d27; --shadow:0 10px 30px rgba(0,0,0,.35); }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Manrope,"Noto Sans Bengali",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+button,input,select,textarea{font:inherit}
+button,[role="button"],select,summary{ min-height:44px }
+a{color:inherit}
+.wrap{max-width:1180px;margin:0 auto;padding:18px 16px 40px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0 16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:46px;height:46px;border-radius:13px;background:var(--ink);color:#fff;display:grid;place-items:center;font-size:22px}
+.brand b{font-family:Sora,sans-serif;font-size:17px;letter-spacing:-.02em;display:block;line-height:1}
+.brand span{font-size:12.5px;color:var(--muted);font-weight:600}
+.pill{display:inline-flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700}
+.dot{width:9px;height:9px;border-radius:50%;background:#f59e0b}
+.dot.ok{background:#16a34a}.dot.bad{background:#dc2626}
+.hero{background:var(--ink);color:#fff;border-radius:24px;padding:28px 24px 24px;overflow:hidden;position:relative}
+.hero h1{font-family:Sora,sans-serif;font-size:clamp(28px,5vw,52px);line-height:.95;letter-spacing:-.03em;margin:6px 0 12px;max-width:720px}
+.hero h1 em{font-style:normal;color:#ffb199}
+.hero p{color:rgba(255,255,255,.82);max-width:640px;margin:0;font-size:16px}
+.kicker{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#ffb199}
+.wave{display:flex;gap:4px;align-items:end;height:42px;margin-top:20px}
+.wave i{display:block;width:6px;background:#fff;border-radius:999px;opacity:.9;animation:wave 1.1s ease-in-out infinite}
+.wave i:nth-child(2n){background:var(--accent);animation-delay:.12s}.wave i:nth-child(3n){animation-delay:.24s}.wave i:nth-child(4n){animation-delay:.36s}
+@keyframes wave{0%,100%{transform:scaleY(.55)}50%{transform:scaleY(1)}}
+@media (prefers-reduced-motion: reduce){.wave i{animation:none}}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{border:0;border-radius:999px;padding:12px 18px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;font-size:15px}
+.btn-primary{background:var(--accent);color:#fff}.btn-primary:hover{background:var(--accent-dark)}
+.btn-white{background:#fff;color:#111}.btn-ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink)}
+.btn-messenger{background:var(--messenger);color:#fff}
+.btn-dark{background:var(--ink);color:#fff}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.btn-sm{padding:9px 14px;font-size:13.5px;min-height:40px}
+.api{margin-top:16px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+.api summary{font-weight:800;cursor:pointer;display:flex;justify-content:space-between;align-items:center;list-style:none}
+.api-grid{display:grid;grid-template-columns:1.6fr .9fr auto;gap:10px;margin-top:14px}
+@media(max-width:760px){.api-grid{grid-template-columns:1fr}}
+input[type="text"],input[type="password"],select,textarea{width:100%;background:var(--surface2);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--ink);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+.hint{font-size:13px;color:var(--muted);margin-top:8px}
+.layout{display:grid;grid-template-columns:1.15fr .85fr;gap:18px;margin-top:18px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:var(--shadow)}
+.card h2{font-family:Sora,sans-serif;font-size:20px;margin:0 0 4px;letter-spacing:-.02em}
+.card h3{font-size:15px;margin:18px 0 8px}
+.sub{color:var(--muted);font-size:14px;margin:0}
+.tabs{display:flex;gap:8px;background:var(--bg2);padding:6px;border-radius:999px;margin:16px 0}
+.tab{flex:1;border:0;background:transparent;border-radius:999px;padding:10px 8px;font-weight:800;font-size:13.5px;cursor:pointer;color:var(--muted)}
+.tab.active{background:var(--surface);color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.08)}
+.panel{display:none}.panel.active{display:block}
+label{font-weight:700;font-size:13.5px;display:block;margin:14px 0 6px}
+textarea{resize:vertical;min-height:130px;line-height:1.6}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.chip{border:1px solid var(--line);background:var(--surface2);border-radius:999px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer;min-height:38px}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1}
+.range-wrap{display:flex;align-items:center;gap:12px}
+input[type="range"]{flex:1;accent-color:var(--accent);height:44px}
+.profiles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+@media(max-width:560px){.profiles{grid-template-columns:1fr}}
+.profile{border:1.5px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;background:var(--surface2);text-align:left;width:100%}
+.profile.selected{border-color:var(--accent);background:#fff7f2}
+@media (prefers-color-scheme: dark){.profile.selected{background:#2a1e18}}
+.profile b{display:block;font-size:15px}
+.profile span{font-size:12.5px;color:var(--muted);display:block;word-break:break-all}
+.badge{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;font-weight:800;background:var(--gold);color:#111;padding:3px 7px;border-radius:999px;margin-bottom:6px}
+.badge.teal{background:#ccfbf1;color:#115e59}
+.drop{border:1.8px dashed var(--line);border-radius:16px;padding:18px;text-align:center;background:var(--surface2)}
+.drop strong{display:block}
+audio{width:100%;margin-top:10px}
+.output-empty{text-align:center;padding:28px 12px;color:var(--muted)}
+.output-empty .big{font-size:38px}
+.progress{height:8px;background:var(--bg2);border-radius:999px;overflow:hidden;display:none;margin-top:12px}
+.progress i{display:block;height:100%;width:40%;background:var(--accent);border-radius:999px;animation:load 1s infinite alternate}
+@keyframes load{from{transform:translateX(-40%)}to{transform:translateX(220%)}}
+.status{font-size:13.5px;margin-top:10px;padding:10px 12px;border-radius:10px;display:none}
+.status.show{display:block}.status.ok{background:#dcfce7;color:#14532d}.status.err{background:#fee2e2;color:#7f1d1d}.status.info{background:#fef3c7;color:#713f12}
+@media (prefers-color-scheme: dark){.status.ok{background:#14532d;color:#dcfce7}.status.err{background:#450a0a;color:#fee2e2}.status.info{background:#451a03;color:#fef3c7}}
+.history{margin-top:14px;display:grid;gap:10px}
+.hist{border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--surface2)}
+.hist b{font-size:14px}.hist p{margin:4px 0 8px;font-size:13px;color:var(--muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.actions .btn{flex:1;min-width:130px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:18px;background:#111;color:#fff;padding:12px 16px;border-radius:999px;font-weight:700;font-size:14px;z-index:50;display:none;max-width:92vw;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.toast.show{display:block}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+@media(max-width:700px){.steps{grid-template-columns:1fr}}
+.step{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:12px}
+.step b{color:#fff}.step p{font-size:13px;margin:4px 0 0;color:rgba(255,255,255,.75)}
+.rec-on{background:#dc2626!important;color:#fff!important}
+.small{font-size:12.5px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topbar">
+    <div class="brand"><div class="mark">🎙️</div><div><b>Voice Changer Studio</b><span>Powered by Fish Audio • Text • Speech • Clone</span></div></div>
+    <div class="pill"><span class="dot" id="apiDot"></span><span id="apiLabel">API not connected — key needed for MP3</span></div>
+  </div>
+
+  <section class="hero">
+    <div class="kicker">Fish Audio Studio</div>
+    <h1>Your voice, <em>any voice.</em><br>Text থেকে voice বানাও।</h1>
+    <p>লেখা দাও বা নিজের ভয়েস রেকর্ড করো, cloning profile বেছে নাও — তারপর Generate চাপলেই নতুন ভয়েস তৈরি হবে। Play করো, Download করো, Messenger-এ Share করো।</p>
+    <div class="wave" aria-hidden="true"><i style="height:18px"></i><i style="height:34px"></i><i style="height:26px"></i><i style="height:40px"></i><i style="height:20px"></i><i style="height:36px"></i><i style="height:28px"></i><i style="height:42px"></i><i style="height:22px"></i><i style="height:32px"></i><i style="height:18px"></i><i style="height:38px"></i><i style="height:24px"></i><i style="height:30px"></i></div>
+    <div class="steps">
+      <div class="step"><b>1 · Input দাও</b><p>Text লেখো অথবা mic / file দিয়ে তোমার ভয়েস দাও</p></div>
+      <div class="step"><b>2 · Profile বাছো</b><p>Cloning profile-ই হবে output voice</p></div>
+      <div class="step"><b>3 · Play · Download · Share</b><p>তৈরি ভয়েস শোনো, MP3 নামাও, Messenger-এ পাঠাও</p></div>
+    </div>
+  </section>
+
+  <details class="api" id="apiPanel" open>
+    <summary><span>🔑 Fish Audio API Connection</span><span class="small">Tap to open / close ▾</span></summary>
+    <div class="api-grid">
+      <div><label for="apiKey" style="margin-top:0">API Key (this tab only)</label><input type="password" id="apiKey" placeholder="Paste your Fish Audio API key here" autocomplete="off"></div>
+      <div><label for="modelSel" style="margin-top:0">Model</label><select id="modelSel"><option value="s2.1-pro-free" selected>S2.1 Pro Free — no credit needed</option><option value="s2.1-pro">S2.1 Pro — needs API credit</option><option value="s1">S1</option></select></div>
+      <div style="display:flex;align-items:end;gap:8px"><button class="btn btn-dark" id="connectBtn" style="flex:1">Connect</button><button class="btn btn-ghost" id="toggleKey" type="button">Show</button></div>
+    </div>
+    <p class="hint">Key টা শুধু এই tab-এর memory-তে থাকে — page বন্ধ করলে মুছে যায়, কোথাও save হয় না। Paid model-এ credit না থাকলে (402) studio নিজে Free model-এ আবার try করবে। Free model দিয়েই শুরু করো।</p>
+    <div class="status" id="apiStatus"></div>
+  </details>
+
+  <div class="layout">
+    <!-- LEFT: STUDIO -->
+    <main class="card">
+      <h2>Studio — ভয়েস বানাও</h2>
+      <p class="sub">তিনটা mode আছে। Text, Speech আর Clone — যেটা দরকার সেটা বাছো।</p>
+
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-tab="tts">✍️ Text to Voice</button>
+        <button class="tab" data-tab="sts">🎤 Speech to Voice</button>
+        <button class="tab" data-tab="clone">🧬 Create Clone</button>
+      </div>
+
+      <!-- TTS -->
+      <section class="panel active" id="panel-tts">
+        <label for="ttsText">তুমি যা বলাতে চাও — Text লেখো</label>
+        <textarea id="ttsText" maxlength="3000" placeholder="এখানে text লেখো… যেমন: আসসালামু আলাইকুম, আজকে আমরা একটা মজার গল্প শুনবো!">আসসালামু আলাইকুম! আজকে আমরা শিখবো অক্টোপাসের একটা মজার রহস্য — ওদের তিনটা হার্ট থাকে!</textarea>
+        <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><div class="chips">
+          <button class="chip" data-example="আসসালামু আলাইকুম! স্বাগতম আমার চ্যানেলে। আজকের ভিডিওটা খুবই মজার হবে, শেষ পর্যন্ত দেখো!">🇧🇩 বাংলা স্বাগতম</button>
+          <button class="chip" data-example="Hello everyone! Welcome to Animal Fun Academy. Today Ollie the Octopus will learn a super funny superpower!">🐙 Animal Fun Academy</button>
+          <button class="chip" data-example="Hello, this is a test of my cloned voice. If you can hear this clearly, the voice changer is working perfectly.">🇬🇧 English test</button>
+        </div><span class="small" id="charCount">0 / 3000</span></div>
+
+        <label>Cloning Profile — Output Voice</label>
+        <div class="profiles" id="profileListTTS"></div>
+
+        <div class="row">
+          <div><label>Speed — গতি</label><div class="range-wrap"><input type="range" id="speedRange" min="0.5" max="1.5" step="0.05" value="0.7"><b id="speedLabel">0.70× Calm</b></div><p class="small">তোমার পছন্দের voice-এর জন্য 0.7× Calm সবচেয়ে ভালো শোনায়।</p></div>
+        </div>
+        <div class="row">
+          <div><label for="tempRange">Expressiveness</label><input type="range" id="tempRange" min="0" max="1" step="0.1" value="0.3"></div>
+          <div><label for="formatSel">Format</label><select id="formatSel"><option value="mp3" selected>MP3</option><option value="wav">WAV</option><option value="opus">Opus</option></select></div>
+        </div>
+
+        <button class="btn btn-primary" id="generateBtn" style="width:100%;margin-top:18px;font-size:16px;padding:16px">✨ Generate Voice — ভয়েস বানাও</button>
+        <button class="btn btn-ghost" id="previewBtn" style="width:100%;margin-top:8px">▶ Preview with Browser Voice (API ছাড়াই শোনা যাবে)</button>
+        <div class="progress" id="ttsProgress"><i></i></div>
+        <div class="status" id="ttsStatus"></div>
+      </section>
+
+      <!-- STS -->
+      <section class="panel" id="panel-sts">
+        <label>তোমার ভয়েস — Input (Record বা Upload)</label>
+        <div class="drop">
+          <strong>🎙️ Record করো অথবা audio file দাও</strong>
+          <p class="small">তোমার বলা কথাটাই নতুন cloning voice-এ আবার তৈরি হবে।</p>
+          <div class="row" style="margin-top:10px">
+            <button class="btn btn-dark" id="recordBtn2">● Start Recording</button>
+            <label class="btn btn-ghost" for="speechFile" style="cursor:pointer">📁 Upload Audio</label>
+            <input type="file" id="speechFile" accept="audio/*" hidden>
+          </div>
+          <audio id="inputPlayer" controls style="display:none"></audio>
+          <p class="small" id="inputInfo"></p>
+        </div>
+
+        <label for="stsText">Input-এ যা বলা হয়েছে / Output-এ যা বলবে</label>
+        <textarea id="stsText" placeholder="Record করার পর এখানে কথাটা লিখে দাও, অথবা নিচের Speech-to-Text চাপো…"></textarea>
+        <button class="btn btn-ghost btn-sm" id="sttBtn">🎧 Speech to Text (Browser)</button>
+        <span class="small" id="sttHint"></span>
+
+        <label>Target Cloning Profile — কার গলায় শুনতে চাও?</label>
+        <div class="profiles" id="profileListSTS"></div>
+
+        <button class="btn btn-primary" id="convertBtn" style="width:100%;margin-top:18px;font-size:16px;padding:16px">🔁 Convert Voice — ভয়েস বদলাও</button>
+        <div class="progress" id="stsProgress"><i></i></div>
+        <div class="status" id="stsStatus"></div>
+      </section>
+
+      <!-- CLONE -->
+      <section class="panel" id="panel-clone">
+        <label for="cloneName">নতুন Profile-এর নাম</label>
+        <input type="text" id="cloneName" placeholder="যেমন: Farhan — My Voice">
+        <label for="cloneDesc">বর্ণনা (optional)</label>
+        <input type="text" id="cloneDesc" placeholder="যেমন: My own voice for Messenger messages">
+        <label for="cloneVoiceId">Fish Audio Voice ID (যদি আগে থেকে থাকে)</label>
+        <input type="text" id="cloneVoiceId" placeholder="যেমন: 8d83fd34cae54ff9ab8d82537b8fff9d — না থাকলে খালি রাখো">
+        <label>Voice Sample — তোমার ভয়েসের নমুনা (15–30 sec, পরিষ্কার, গান ছাড়া)</label>
+        <div class="drop">
+          <strong>🎙️ Sample Record / Upload</strong>
+          <p class="small">ভালো clone-এর জন্য শান্ত জায়গায়, স্বাভাবিকভাবে কথা বলো।</p>
+          <div class="row" style="margin-top:10px">
+            <button class="btn btn-dark" id="recordBtnClone">● Start Recording</button>
+            <label class="btn btn-ghost" for="cloneFile" style="cursor:pointer">📁 Upload Sample</label>
+            <input type="file" id="cloneFile" accept="audio/*" hidden>
+          </div>
+          <audio id="clonePlayer" controls style="display:none"></audio>
+          <p class="small" id="cloneInfo"></p>
+        </div>
+        <label for="cloneTranscript">Sample-এ যা বলেছো (transcript, optional)</label>
+        <textarea id="cloneTranscript" style="min-height:80px" placeholder="Sample-এ বলা কথাটা এখানে লিখলে clone আরও accurate হয়…"></textarea>
+        <button class="btn btn-primary" id="createCloneBtn" style="width:100%;margin-top:16px;padding:16px">🧬 Create Cloning Profile</button>
+        <div class="status" id="cloneStatus"></div>
+        <p class="hint">API key connected থাকলে profile টা সরাসরি Fish Audio-তে তৈরি করার চেষ্টা করা হবে। না থাকলে profile টা এই session-এ save থাকবে — Voice ID দিলে সেটা দিয়েই Generate হবে।</p>
+      </section>
+    </main>
+
+    <!-- RIGHT: OUTPUT -->
+    <aside>
+      <div class="card" style="position:sticky;top:12px">
+        <h2>Output — তৈরি ভয়েস</h2>
+        <p class="sub">Generate করার পর এখানে play, download আর share পাবে।</p>
+        <div id="outputEmpty" class="output-empty"><div class="big">🔊</div><p>এখনো কোনো ভয়েস তৈরি হয়নি।<br>বামে text লিখে <b>Generate Voice</b> চাপো।</p></div>
+        <div id="outputBox" style="display:none">
+          <p style="font-weight:800;margin:14px 0 2px" id="outputTitle">Generated Voice</p>
+          <p class="small" id="outputMeta"></p>
+          <p style="margin:8px 0;font-size:14px" id="outputText"></p>
+          <audio id="outputPlayer" controls></audio>
+          <div class="actions">
+            <button class="btn btn-dark" id="playBtn">▶ Play</button>
+            <a class="btn btn-primary" id="downloadBtn" download="voice-changer-output.mp3">⬇ Download</a>
+          </div>
+          <button class="btn btn-messenger" id="shareMessengerBtn" style="width:100%;margin-top:10px;padding:14px">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white" aria-hidden="true"><path d="M12 2C6.36 2 2 6.13 2 11.7c0 2.91 1.19 5.44 3.14 7.17V22l3.19-1.76c.87.24 1.8.37 2.67.37 5.64 0 10-4.13 10-9.7C22 6.13 17.64 2 12 2zm1.19 12.46l-2.54-2.71-4.95 2.71 5.44-5.78 2.6 2.71 4.9-2.71-5.45 5.78z"/></svg>
+            Share to Messenger
+          </button>
+          <p class="small" style="text-align:center;margin-top:6px">চাপ দিলে Messenger share page খুলবে, text copy হয়ে যাবে — paste করে পাঠিয়ে দাও। Audio টা Download করে Messenger-এ attach-ও করতে পারবে।</p>
+          <button class="btn btn-ghost btn-sm" id="copyTextBtn" style="width:100%">📋 Copy Generated Text</button>
+        </div>
+        <div class="status" id="outputStatus"></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>History — এই session-এ তৈরি</h2>
+        <p class="sub">সবশেষ তৈরি ভয়েসগুলো এখানে থাকে। Play / Download / Messenger — সব আবার করা যাবে।</p>
+        <div class="history" id="historyList"><p class="small">এখনো history খালি।</p></div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h2>ভালো result-এর টিপস</h2>
+        <ul style="margin:10px 0 0;padding-left:18px;font-size:14px;color:var(--muted);display:grid;gap:6px">
+          <li>Clone sample 15–30 সেকেন্ড, একটানা কথা, background music ছাড়া।</li>
+          <li>বাংলা text-এ যতিচিহ্ন দিলে pronunciation ভালো হয়।</li>
+          <li>Calm narration-এর জন্য speed 0.7×, lively-এর জন্য 0.9–1.0×।</li>
+          <li>লম্বা text ছোট ছোট বাক্যে ভাগ করলে output পরিষ্কার হয়।</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <p class="small" style="text-align:center;margin-top:22px">Voice Changer Studio · Fish Audio API দিয়ে চলে · তোমার API key আর recording এই tab-এর বাইরে কোথাও যায় না — শুধু Fish Audio-তে generation-এর জন্য পাঠানো হয়।</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var profiles=[
+  {id:'fav', name:'শান্ত এবং স্মৃতিময় কণ্ঠ', desc:'Calm & Nostalgic · তোমার পছন্দের voice · Messenger-এর জন্য', voiceId:'8d83fd34cae54ff9ab8d82537b8fff9d', badge:'YOUR FAVOURITE', sampleText:'আসসালামু আলাইকুম, এটা তোমার পছন্দের শান্ত কণ্ঠের নমুনা।'},
+  {id:'default', name:'Fish Audio Default', desc:'No clone · standard clear voice', voiceId:'', badge:'BUILT-IN', sampleText:'Hello, this is the default Fish Audio voice.'}
+];
+var selectedProfileId='fav';
+var apiKey=''; var currentBlobUrl=''; var currentText=''; var historyItems=[];
+var inputBlob=null, cloneBlob=null, cloneFileObj=null, speechFileObj=null;
+
+function $(id){return document.getElementById(id)}
+function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3200)}
+function showStatus(el,msg,type){el.textContent=msg;el.className='status show '+type}
+function hideStatus(el){el.className='status'}
+
+function renderProfiles(){
+  var html=profiles.map(function(p){
+    var sel=p.id===selectedProfileId?' selected':'';
+    return '<button type="button" class="profile'+sel+'" data-profile="'+p.id+'"><span class="badge'+(p.badge==='BUILT-IN'?' teal':'')+'">'+p.badge+'</span><b>'+escapeHtml(p.name)+'</b><span>'+escapeHtml(p.desc)+'</span><span style="margin-top:4px">ID: '+(p.voiceId?escapeHtml(p.voiceId):'— default —')+'</span></button>';
+  }).join('');
+  $('profileListTTS').innerHTML=html; $('profileListSTS').innerHTML=html;
+  document.querySelectorAll('[data-profile]').forEach(function(el){ el.addEventListener('click',function(){ selectedProfileId=el.getAttribute('data-profile'); renderProfiles(); var p=getProfile(); toast('Profile selected: '+p.name); }); });
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function getProfile(){return profiles.find(function(p){return p.id===selectedProfileId})||profiles[0]}
+function updateChar(){ $('charCount').textContent=$('ttsText').value.length+' / 3000'; }
+function speedName(v){ if(v<=0.75) return 'Calm'; if(v<=0.9) return 'Relaxed'; if(v<=1.05) return 'Normal'; return 'Fast'; }
+function updateSpeed(){ var v=parseFloat($('speedRange').value); $('speedLabel').textContent=v.toFixed(2)+'× '+speedName(v); }
+
+// Tabs
+document.querySelectorAll('.tab').forEach(function(tab){ tab.addEventListener('click',function(){ document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')}); tab.classList.add('active'); document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')}); $('panel-'+tab.getAttribute('data-tab')).classList.add('active'); }); });
+
+// Examples
+document.querySelectorAll('[data-example]').forEach(function(ch){ ch.addEventListener('click',function(){ $('ttsText').value=ch.getAttribute('data-example'); updateChar(); $('ttsText').focus(); }); });
+$('ttsText').addEventListener('input',updateChar); $('speedRange').addEventListener('input',updateSpeed);
+
+// API key visibility + connect
+$('toggleKey').addEventListener('click',function(){ var i=$('apiKey'); if(i.type==='password'){i.type='text';this.textContent='Hide'}else{i.type='password';this.textContent='Show'} });
+$('connectBtn').addEventListener('click',async function(){
+  apiKey=$('apiKey').value.trim(); var st=$('apiStatus');
+  if(!apiKey){ showStatus(st,'API key দাও আগে — Fish Audio dashboard থেকে key টা paste করো।','err'); return; }
+  showStatus(st,'Connecting to Fish Audio…','info'); this.disabled=true; this.textContent='Checking…';
+  try{
+    var r=await fetch('https://api.fish.audio/wallet/self/api-credit',{headers:{'Authorization':'Bearer '+apiKey}});
+    var txt=await r.text();
+    if(!r.ok) throw new Error('HTTP '+r.status+' — '+txt.slice(0,180));
+    var data={}; try{data=JSON.parse(txt)}catch(e){}
+    var credit=(data.credit!==undefined?data.credit:(data.balance!==undefined?data.balance:'—'));
+    $('apiDot').className='dot ok'; $('apiLabel').textContent='API connected · Credit: '+credit;
+    showStatus(st,'✅ Connected! Credit: '+credit+' · Model: '+$('modelSel').value+' · এখন Generate করতে পারবে।','ok');
+    toast('Fish Audio connected');
+  }catch(e){ $('apiDot').className='dot bad'; $('apiLabel').textContent='Connection failed'; showStatus(st,'❌ Connect হয়নি: '+e.message+' — key টা ঠিক আছে কিনা আর internet check করো। Browser CORS block করলে key ঠিক থাকলেও Generate-এ error দেখাতে পারে।','err'); }
+  this.disabled=false; this.textContent='Connect';
+});
+
+// Core TTS call with free-model retry on 402
+async function callFishTTS(text,profile){
+  var model=$('modelSel').value; var fmt=$('formatSel').value;
+  var speed=parseFloat($('speedRange').value); var temp=parseFloat($('tempRange').value);
+  async function attempt(m){
+    var body={text:text,format:fmt,latency:'normal',temperature:temp,top_p:0.5,prosody:{speed:speed,volume:0,normalize_loudness:true}};
+    if(fmt==='mp3') body.mp3_bitrate=192;
+    if(profile && profile.voiceId) body.reference_id=profile.voiceId;
+    var r=await fetch('https://api.fish.audio/v1/tts',{method:'POST',headers:{'Authorization':'Bearer '+apiKey,'Content-Type':'application/json','model':m},body:JSON.stringify(body)});
+    if(!r.ok){ var t=await r.text(); var err=new Error('HTTP '+r.status+' — '+t.slice(0,220)); err.status=r.status; throw err; }
+    return await r.blob();
+  }
+  try{ return await attempt(model); }
+  catch(e){ if(e.status===402 && model!=='s2.1-pro-free'){ toast('Paid model-এ credit নেই — Free model-এ আবার try হচ্ছে'); return await attempt('s2.1-pro-free'); } throw e; }
+}
+
+function showOutput(blob,text,profile,modeLabel){
+  if(currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+  currentBlobUrl=URL.createObjectURL(blob); currentText=text;
+  $('outputEmpty').style.display='none'; $('outputBox').style.display='block';
+  $('outputTitle').textContent=modeLabel+' · '+profile.name;
+  $('outputMeta').textContent='Model: '+$('modelSel').value+' · Speed: '+$('speedRange').value+'× · '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  $('outputText').textContent=text;
+  $('outputPlayer').src=currentBlobUrl;
+  var ext=$('formatSel').value==='wav'?'wav':($('formatSel').value==='opus'?'opus':'mp3');
+  var dl=$('downloadBtn'); dl.href=currentBlobUrl; dl.setAttribute('download','voice-changer-'+Date.now()+'.'+ext);
+  historyItems.unshift({url:currentBlobUrl,text:text,profile:profile.name,time:new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})});
+  renderHistory();
+  $('outputPlayer').play().catch(function(){});
+}
+function renderHistory(){
+  if(!historyItems.length){ $('historyList').innerHTML='<p class="small">এখনো history খালি।</p>'; return; }
+  $('historyList').innerHTML=historyItems.map(function(h,i){
+    return '<div class="hist"><b>'+escapeHtml(h.profile)+' · '+h.time+'</b><p>'+escapeHtml(h.text)+'</p><audio controls src="'+h.url+'"></audio><div class="row" style="margin-top:8px"><a class="btn btn-dark btn-sm" href="'+h.url+'" download="voice-'+(i+1)+'.mp3">⬇ Download</a><button class="btn btn-messenger btn-sm" data-share="'+i+'">Share to Messenger</button></div></div>';
+  }).join('');
+  document.querySelectorAll('[data-share]').forEach(function(b){ b.addEventListener('click',function(){ shareToMessenger(historyItems[parseInt(b.getAttribute('data-share'))].text); }); });
+}
+
+async function doGenerate(text,profile,statusEl,progressEl,modeLabel){
+  text=(text||'').trim(); if(!text){ showStatus(statusEl,'আগে text লেখো — খালি text দিয়ে voice হবে না।','err'); return; }
+  if(!apiKey){ apiKey=$('apiKey').value.trim(); }
+  if(!apiKey){ showStatus(statusEl,'MP3 Generate-এর জন্য Fish Audio API key লাগবে। উপরে API panel-এ key paste করে Connect চাপো। API ছাড়া শুনতে চাইলে “Preview with Browser Voice” চাপো।','err'); $('apiPanel').open=true; $('apiKey').focus(); return; }
+  hideStatus(statusEl); progressEl.style.display='block';
+  try{ var blob=await callFishTTS(text,profile); showOutput(blob,text,profile,modeLabel); showStatus(statusEl,'✅ Voice তৈরি! নিচে / ডানে Output-এ Play, Download আর Messenger share পাবে।','ok'); toast('Voice generated'); }
+  catch(e){ showStatus(statusEl,'❌ Generate হয়নি: '+e.message,'err'); }
+  progressEl.style.display='none';
+}
+
+$('generateBtn').addEventListener('click',function(){ doGenerate($('ttsText').value,getProfile(),$('ttsStatus'),$('ttsProgress'),'Text to Voice'); });
+$('convertBtn').addEventListener('click',function(){ doGenerate($('stsText').value,getProfile(),$('stsStatus'),$('stsProgress'),'Speech to Voice'); });
+
+// Browser preview (no API)
+$('previewBtn').addEventListener('click',function(){
+  var text=$('ttsText').value.trim(); if(!text){ toast('আগে text লেখো'); return; }
+  if(!('speechSynthesis' in window)){ toast('এই browser-এ speech preview নেই'); return; }
+  speechSynthesis.cancel(); var u=new SpeechSynthesisUtterance(text); u.rate=parseFloat($('speedRange').value); u.lang=/[\u0980-\u09FF]/.test(text)?'bn-BD':'en-US'; speechSynthesis.speak(u); toast('Browser voice-এ preview চলছে');
+});
+$('playBtn').addEventListener('click',function(){ var p=$('outputPlayer'); if(p.paused) p.play(); else p.pause(); });
+$('outputPlayer').addEventListener('play',function(){ $('playBtn').textContent='⏸ Pause'; });
+$('outputPlayer').addEventListener('pause',function(){ $('playBtn').textContent='▶ Play'; });
+
+// Share to Messenger
+function shareToMessenger(text){
+  var msg=text||currentText||'আমি Voice Changer Studio দিয়ে একটা নতুন ভয়েস বানিয়েছি!';
+  if(navigator.clipboard){ navigator.clipboard.writeText(msg).catch(function(){}); }
+  var url='https://www.facebook.com/dialog/send?app_id=87741124305&link='+encodeURIComponent('https://www.messenger.com/')+'&redirect_uri='+encodeURIComponent('https://www.messenger.com/');
+  window.open(url,'_blank','width=900,height=620');
+  // Fallback if popup/dialog is blocked or app_id dialog fails, open Messenger directly after a beat if window didn't open? Keep simple: also toast guidance.
+  toast('Messenger share page খুলছে — text copy হয়েছে, paste করে পাঠাও');
+  showStatus($('outputStatus'),'Messenger share page নতুন tab-এ খোলা হয়েছে। Generated text clipboard-এ copy হয়েছে — Messenger-এ paste করলেই পাঠাতে পারবে। Audio পাঠাতে চাইলে Download করা MP3 টা attach করো।','info');
+}
+$('shareMessengerBtn').addEventListener('click',function(){ shareToMessenger(currentText); });
+$('copyTextBtn').addEventListener('click',function(){ if(navigator.clipboard && currentText){ navigator.clipboard.writeText(currentText); toast('Text copied'); } });
+
+// Recording helper
+function setupRecorder(btnId,playerId,infoId,onBlob){
+  var btn=$(btnId), mediaRecorder=null, chunks=[], stream=null, recording=false;
+  btn.addEventListener('click',async function(){
+    if(recording){ mediaRecorder.stop(); return; }
+    try{ stream=await navigator.mediaDevices.getUserMedia({audio:true}); }catch(e){ toast('Mic permission লাগবে — browser-এ Allow করো'); return; }
+    chunks=[]; mediaRecorder=new MediaRecorder(stream);
+    mediaRecorder.ondataavailable=function(e){ if(e.data.size) chunks.push(e.data); };
+    mediaRecorder.onstop=function(){ recording=false; btn.textContent='● Start Recording'; btn.classList.remove('rec-on'); stream.getTracks().forEach(function(t){t.stop()}); var blob=new Blob(chunks,{type:mediaRecorder.mimeType||'audio/webm'}); onBlob(blob); var url=URL.createObjectURL(blob); var pl=$(playerId); pl.src=url; pl.style.display='block'; $(infoId).textContent='Recorded · '+(blob.size/1024).toFixed(1)+' KB · আবার শুনে দেখো, ঠিক থাকলে Generate / Create করো।'; };
+    mediaRecorder.start(); recording=true; btn.textContent='■ Stop Recording'; btn.classList.add('rec-on'); $(infoId).textContent='Recording চলছে… কথা বলো, শেষ হলে Stop চাপো।';
+  });
+}
+setupRecorder('recordBtn2','inputPlayer','inputInfo',function(b){ inputBlob=b; });
+setupRecorder('recordBtnClone','clonePlayer','cloneInfo',function(b){ cloneBlob=b; cloneFileObj=null; });
+
+function handleFile(inputId,playerId,infoId,cb){
+  $(inputId).addEventListener('change',function(){ var f=this.files[0]; if(!f) return; cb(f); var pl=$(playerId); pl.src=URL.createObjectURL(f); pl.style.display='block'; $(infoId).textContent=f.name+' · '+(f.size/1024).toFixed(1)+' KB'; });
+}
+handleFile('speechFile','inputPlayer','inputInfo',function(f){ speechFileObj=f; inputBlob=f; if(!$('stsText').value) $('stsText').placeholder='File দেওয়া হয়েছে: '+f.name+' — এখন Output-এ যা বলবে সেটা এখানে লেখো…'; });
+handleFile('cloneFile','clonePlayer','cloneInfo',function(f){ cloneFileObj=f; cloneBlob=f; });
+
+// Speech to text
+$('sttBtn').addEventListener('click',function(){
+  var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){ $('sttHint').textContent=' — এই browser-এ Speech-to-Text নেই, text টা হাতে লিখে দাও।'; return; }
+  var rec=new SR(); rec.lang='bn-BD'; rec.interimResults=false; $('sttHint').textContent=' — শুনছি… কথা বলো'; this.textContent='🎧 Listening…';
+  var btn=this;
+  rec.onresult=function(e){ $('stsText').value=e.results[0][0].transcript; btn.textContent='🎧 Speech to Text (Browser)'; $('sttHint').textContent=' — text পাওয়া গেছে, check করে Convert চাপো।'; };
+  rec.onerror=function(){ btn.textContent='🎧 Speech to Text (Browser)'; $('sttHint').textContent=' — শোনা যায়নি, আবার try করো বা হাতে লেখো।'; };
+  rec.onend=function(){ btn.textContent='🎧 Speech to Text (Browser)'; };
+  rec.start();
+});
+
+// Create clone
+$('createCloneBtn').addEventListener('click',async function(){
+  var name=$('cloneName').value.trim(); var vid=$('cloneVoiceId').value.trim(); var st=$('cloneStatus');
+  if(!name){ showStatus(st,'Profile-এর নাম দাও আগে।','err'); return; }
+  if(!vid && !cloneBlob){ showStatus(st,'Voice ID দাও, অথবা একটা voice sample record / upload করো — যেকোনো একটা লাগবেই।','err'); return; }
+  // Try real Fish Audio model creation when we have key + file
+  if(!apiKey) apiKey=$('apiKey').value.trim();
+  var createdId=vid;
+  if(apiKey && cloneBlob && !vid){
+    showStatus(st,'Fish Audio-তে clone তৈরি করার চেষ্টা হচ্ছে…','info');
+    try{
+      var fd=new FormData(); fd.append('title',name); fd.append('description',$('cloneDesc').value||''); fd.append('visibility','private'); fd.append('type','tts');
+      var fileBlob=cloneFileObj||cloneBlob; fd.append('voices',fileBlob,'sample.webm');
+      var tr=$('cloneTranscript').value.trim(); if(tr) fd.append('texts',tr);
+      var r=await fetch('https://api.fish.audio/model',{method:'POST',headers:{'Authorization':'Bearer '+apiKey},body:fd});
+      var t=await r.text(); if(!r.ok) throw new Error('HTTP '+r.status+' — '+t.slice(0,200));
+      var d={}; try{d=JSON.parse(t)}catch(e){}
+      createdId=d._id||d.id||vid; showStatus(st,'✅ Fish Audio-তে clone তৈরি হয়েছে! ID: '+(createdId||'— response check করো'),'ok');
+    }catch(e){ showStatus(st,'Fish Audio-তে সরাসরি তৈরি হয়নি ('+e.message+') — profile টা এই session-এ save করে দেওয়া হলো। Voice ID পেলে Edit করে বসিয়ে দিলেই Generate হবে।','info'); }
+  } else {
+    showStatus(st,'✅ Profile তৈরি! এখন Text to Voice / Speech to Voice-এ এই profile বেছে Generate করতে পারবে।','ok');
+  }
+  var nid='clone-'+Date.now();
+  profiles.push({id:nid,name:name,desc:$('cloneDesc').value||'My cloned voice · session profile',voiceId:createdId||'',badge:'MY CLONE',sampleText:''});
+  selectedProfileId=nid; renderProfiles(); toast('Clone profile created: '+name);
+  document.querySelector('[data-tab="tts"]').click();
+});
+
+renderProfiles(); updateChar(); updateSpeed();
+</script>
+</body>
+</html>
